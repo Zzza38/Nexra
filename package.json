@@ -7,16 +7,16 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "nova": "nova.js"
+    "nexra": "nexra.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Zzza38/Nova.git"
+    "url": "git+https://github.com/Zzza38/Nexra.git"
   },
   "author": "Zzza38",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Zzza38/Nova/issues"
+    "url": "https://github.com/Zzza38/Nexra/issues"
   },
-  "homepage": "https://github.com/Zzza38/Nova#readme"
+  "homepage": "https://github.com/Zzza38/Nexra#readme"
 }
