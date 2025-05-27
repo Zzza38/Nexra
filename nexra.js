@@ -8,7 +8,7 @@ switch (arguments[0]) {
         if (arguments[1]) {
             console.log(lexer.lex(arguments[1]))
         } else {
-            console.log("Usage: nova run {file}");
+            console.log("Usage: nexra run {file}");
         }
         break;
 
