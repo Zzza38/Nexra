@@ -1,0 +1,22 @@
+{
+  "name": "nova",
+  "version": "1.0.0",
+  "description": "An object based compiled programming language based on Node.JS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "nova": "nova.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zzza38/Nova.git"
+  },
+  "author": "Zzza38",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Zzza38/Nova/issues"
+  },
+  "homepage": "https://github.com/Zzza38/Nova#readme"
+}
