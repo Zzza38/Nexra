@@ -1,13 +1,14 @@
 {
-  "name": "nova",
+  "name": "nexra",
   "version": "1.0.0",
   "description": "An object based compiled programming language based on Node.JS",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "nexra ./test/test.nxa",
+    "test": "node src/main.js ./test/test.nxa"
   },
   "bin": {
-    "nexra": "nexra.js"
+    "nexra": "src/main.js"
   },
   "repository": {
     "type": "git",
