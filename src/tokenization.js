@@ -6,18 +6,13 @@ const classes = require("./classes");
 class Tokenizer {
     #m_src
     #m_index
-    constructor (str) {
+    constructor(str) {
         this.#m_src = str;
         this.#m_index = 0;
     }
-    /**
-     * 
-     * @returns {classes.Token[]}
-     */
+    /** @returns {classes.Token[]} */
     tokenize() {
-        /**
-         * @type {classes.Token[]}
-         */
+        /** @type {classes.Token[]} */
         let tokens = [];
         let buf = {
             value: "",
@@ -34,14 +29,18 @@ class Tokenizer {
                 while (this.#peek() && helpers.strings.isAlphaNumeric(this.#peek())) {
                     buf.push(this.#consume());
                 }
-
                 if (buf.value === "exit") {
                     tokens.push(new classes.Token(classes.TokenType.exit));
                     buf.clear();
                     continue;
+                } else if (buf.value === "let") {
+                    tokens.push(new classes.Token(classes.TokenType.let));
+                    buf.clear();
+                    continue;
                 } else {
-                    console.error("You messed up; Invalid token: " + buf.value);
-                    process.exit(1);
+                    tokens.push(new classes.Token(classes.TokenType.ident, buf.value));
+                    buf.clear();
+                    continue;
                 }
             } else if (helpers.strings.isNumber(this.#peek())) {
                 buf.push(this.#consume());
@@ -51,8 +50,20 @@ class Tokenizer {
                 tokens.push(new classes.Token(classes.TokenType.int_lit, buf.value));
                 buf.clear();
                 continue;
+            } else if (this.#peek() === '(') {
+                this.#consume();
+                tokens.push(new classes.Token(classes.TokenType.open_paren));
+                continue;
+            } else if (this.#peek() === ')') {
+                this.#consume();
+                tokens.push(new classes.Token(classes.TokenType.close_paren));
+                continue;
             } else if (this.#peek() === ';') {
                 tokens.push(new classes.Token(classes.TokenType.semi));
+                this.#consume();
+                continue;
+            } else if (this.#peek() === '=') {
+                tokens.push(new classes.Token(classes.TokenType.eq));
                 this.#consume();
                 continue;
             } else if (helpers.strings.isWhiteSpace(this.#peek())) {
@@ -67,21 +78,17 @@ class Tokenizer {
         return tokens;
     }
     /**
-     * 
-     * @param {Number} ahead 
+     * @param {Number} offset 
      * @returns {String}
      */
-    #peek(ahead = 1) {
-        if (this.#m_index + ahead > this.#m_src.length) {
+    #peek(offset = 0) {
+        if (this.#m_index + offset >= this.#m_src.length) {
             return null;
         } else {
-            return this.#m_src[this.#m_index];
+            return this.#m_src[this.#m_index + offset];
         }
     }
-    /**
-     * 
-     * @returns {String}
-     */
+    /** @returns {String} */
     #consume() {
         return this.#m_src[this.#m_index++];
     }

@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/Zzza38/Nexra/issues"
   },
-  "homepage": "https://github.com/Zzza38/Nexra#readme"
+  "homepage": "https://github.com/Zzza38/Nexra#readme",
+  "devDependencies": {
+    "@types/node": "^24.3.0"
+  }
 }

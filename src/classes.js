@@ -1,12 +1,21 @@
+// @ts-check
+
+// Tokens
+// TokenType represents a struct
+// The values aren't numbers to match what it is in C and C++ because of debugging
+// Type = "integer_literal" is much easier to understand than type = 1
 class TokenType {
     static "exit" = "exit";
-    static "int_lit" = "int_lit";
-    static "semi" = "semi";
+    static "int_lit" = "integer_literal";
+    static "semi" = ";";
+    static "open_paren" = "(";
+    static "close_paren" = ")";
+    static "ident" = "identifier";
+    static "let" = "let";
+    static "eq" = "=";
 }
-
 class Token {
     /**
-     * 
      * @param {TokenType} type 
      * @param {string} value 
      */
@@ -16,19 +25,79 @@ class Token {
     }
 }
 
-class NodeExpr {
-    /** @type {Number} */
-    int_lit
-    constructor(int) {
-        this.int_lit = int;
+// Expression Nodes
+class NodeExprIntLit {
+    /** @type {Token} */
+    value
+    /** @param {Token} int_lit */
+    constructor(int_lit) {
+        this.value = int_lit;
     }
 };
-class NodeExit {
-    /** @type {NodeExpr} */
-    expr
-    constructor(expr) {
-        expr
+class NodeExprIdent {
+    /** @type {Token} */
+    value
+    /** @param {Token} ident */
+    constructor(ident) {
+        this.value = ident;
+    }
+};
+class NodeExpr {
+    /** @type {NodeExprIntLit | NodeExprIdent} */
+    var
+    /** @param {NodeExprIntLit | NodeExprIdent} v */
+    constructor(v) {
+        this.var = v;
     }
 };
 
-module.exports = { TokenType, Token, NodeExpr, NodeExit };
+// Program Nodes
+class NodeProg {
+    /** @type {NodeStmt[]} */
+    stmts
+    /** @param {NodeStmt[]} stmts */
+    constructor(stmts) {
+        this.stmts = stmts;
+    }
+};
+class NodeStmt {
+    /** @type {NodeStmtExit | NodeStmtLet} */
+    var
+    /** @param {NodeStmtExit | NodeStmtLet} v */
+    constructor(v) {
+        this.var = v;
+    }
+}
+class NodeStmtExit {
+    /** @type {NodeExpr} */
+    expr
+    /** @param {NodeExpr} expr */
+    constructor(expr) {
+        this.expr = expr;
+    }
+}
+class NodeStmtLet {
+    /** @type {Token} */
+    ident
+    /** @type {NodeExpr} */
+    expr
+    /** 
+     * @param {Token} ident 
+     * @param {NodeExpr} expr
+    */
+    constructor(ident, expr) {
+        this.ident = ident;
+        this.expr = expr;
+    }
+}
+module.exports = {
+    TokenType,
+    Token,
+    NodeExprIntLit,
+    NodeExprIdent,
+    NodeExpr,
+    NodeProg,
+    NodeStmt,
+    NodeStmtExit,
+    NodeStmtLet
+};

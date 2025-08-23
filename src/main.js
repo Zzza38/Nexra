@@ -15,7 +15,7 @@ const commandLineArguments = process.argv;
 
 // Main
 function main() {
-    if (commandLineArguments.length !== 3) {
+    if (commandLineArguments.length < 3) {
         console.error("Incorrect usage;");
         console.error("Correct usage: 'nexra <file>'");
         return 1;
