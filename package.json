@@ -1,14 +1,15 @@
 {
   "name": "nexra",
   "version": "1.0.0",
-  "description": "An object based compiled programming language based on Node.JS",
+  "description": "An object based compiled programming language based on Typescript",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "build": "nexra ./test/test.nxa",
-    "test": "node src/main.js ./test/test.nxa"
+    "build": "npx tsc",
+    "test": "npx tsc && nexra test/test.nxa"
   },
   "bin": {
-    "nexra": "src/main.js"
+    "nexra": "dist/main.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,8 @@
   },
   "homepage": "https://github.com/Zzza38/Nexra#readme",
   "devDependencies": {
-    "@types/node": "^24.3.0"
+    "@types/node": "^24.3.0",
+    "ts-migrate": "^0.1.35",
+    "typescript": "^5.9.2"
   }
 }

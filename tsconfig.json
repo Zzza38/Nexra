@@ -2,8 +2,8 @@
     "compilerOptions": {
         "checkJs": true, // optional: JS type checking via JSDoc
         "target": "ES2022",
-        "module": "commonjs", // or "NodeNext" if you’re ESM
-        "moduleResolution": "node",
+        "module": "nodenext", // or "NodeNext" if you’re ESM
+        "moduleResolution": "nodenext",
         "lib": [
             "ES2022"
         ],

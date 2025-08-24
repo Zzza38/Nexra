@@ -1,5 +1,5 @@
 // @ts-check
-const strings = {
+export const strings = {
     isAlpha: (c) => {
         return /^[a-zA-Z]$/.test(c);
     },
@@ -13,10 +13,9 @@ const strings = {
         return /^\s$/.test(c);
     }
 }
-function visit(visitor, obj) {
+export function visit(visitor, obj) {
     const className = obj.constructor.name;
     const fn = visitor[className];
     if (!fn) throw new TypeError("no visitor for " + className);
     return fn(obj);
 }
-module.exports = { strings, visit };

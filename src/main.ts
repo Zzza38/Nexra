@@ -2,14 +2,13 @@
 // @ts-check
 
 // Imports
-const fs = require("fs");
-const { spawn } = require("child_process");
+import * as fs from "fs";
+import { spawn } from "child_process";
 
-const tokenization = require("./tokenization");
-const parsing = require("./parsing");
-const generation = require("./generation");
+import * as tokenization from "./tokenization.js";
+import * as parsing from "./parsing.js";
+import * as generation from "./generation.js";
 
-// const classes = require("./classes");
 // Constants
 const commandLineArguments = process.argv;
 

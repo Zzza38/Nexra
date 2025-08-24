@@ -1,72 +1,54 @@
 // @ts-check
 // Imports
-const classes = require("./classes");
+import { NodeExpr, NodeTermIdent, NodeTermIntLit, NodeProg, NodeStmt, NodeStmtExit, NodeStmtLet } from './classes.js';
 
 // Classes
 class Var {
-    /** @type {number} */
-    stack_loc;
-    /** @param {number} stack_loc */
-    constructor(stack_loc) {
+
+    stack_loc: number;
+
+    constructor(stack_loc: number) {
         this.stack_loc = stack_loc;
     }
 }
 
-class Generator {
-    /** @param {classes.NodeProg} prog */
-    constructor(prog) {
+export class Generator {
+
+    constructor(prog: NodeProg) {
         this.#m_prog = prog;
     }
-    /**  @param {classes.NodeExpr} expr */
-    gen_expr(expr) {
+
+    gen_expr(expr: NodeExpr) {
         const ExprVisitor = {
-            /** @type {Generator} */
-            gen: null,
-            /**
-             * @param {classes.NodeExprIntLit} expr_int_lit 
-             */
-            NodeExprIntLit(expr_int_lit) {
+            gen: this,
+            NodeExprIntLit(expr_int_lit: NodeTermIntLit) {
                 this.gen.#m_output += "    mov rax, " + expr_int_lit.int_lit.value + "\n";
-                this.gen.#push("rax");
+                this.gen.push("rax");
             },
-            /**
-             * @param {classes.NodeExprIdent} expr_ident 
-             */
-            NodeExprIdent(expr_ident) {
+            NodeExprIdent(expr_ident: NodeTermIdent) {
                 if (!this.gen.#m_vars.has(expr_ident.ident.value)) {
                     console.error("Undeclared identifier: " + expr_ident.ident.value);
                     process.exit(1);
                 }
                 const v = this.gen.#m_vars.get(expr_ident.ident.value);
                 let offset = "";
-                offset += "QWORD [rsp + " + ((this.gen.#m_stack_size - v.stack_loc - 1) * 8)+ "]\n";
-                this.gen.#push(offset);
+                offset += "QWORD [rsp + " + ((this.gen.#m_stack_size - v.stack_loc - 1) * 8) + "]\n";
+                this.gen.push(offset);
             }
         }
-        ExprVisitor.gen = this;
         visitVariant(ExprVisitor, expr.var)
     }
-    /** @param {classes.NodeStmt} stmt */
-    gen_stmt(stmt) {
-        /**
-         * 
-         * @param {Object} visitor 
-         * @param {classes.NodeStmt} node 
-         * @returns 
-         */
 
+    gen_stmt(stmt: NodeStmt) {
         const StmtVisitor = {
-            /** @type {Generator} */
             gen: this,
-            /** @param {classes.NodeStmtExit} stmt_exit */
-            NodeStmtExit(stmt_exit) {
+            NodeStmtExit(stmt_exit: NodeStmtExit) {
                 this.gen.gen_expr(stmt_exit.expr);
                 this.gen.#m_output += "    mov rax, 60\n";
-                this.gen.#pop("rdi");
+                this.gen.pop("rdi");
                 this.gen.#m_output += "    syscall\n";
             },
-            /** @param {classes.NodeStmtLet} stmt_let */
-            NodeStmtLet(stmt_let) {
+            NodeStmtLet(stmt_let: NodeStmtLet) {
                 if (this.gen.#m_vars.has(stmt_let.ident.value)) {
                     console.error("Identifier already used: " + stmt_let.ident.value);
                     process.exit(1);
@@ -75,13 +57,11 @@ class Generator {
                 this.gen.gen_expr(stmt_let.expr);
             },
         }
-        StmtVisitor.gen = this;
         visitVariant(StmtVisitor, stmt.var);
     }
-    /** @returns {String} */
-    gen_prog() {
+
+    gen_prog(): string {
         this.#m_output = "global _start\n_start:\n";
-        /** @type {classes.NodeStmt} */
         for (const stmt of this.#m_prog.stmts) {
             this.gen_stmt(stmt);
         }
@@ -92,27 +72,19 @@ class Generator {
     }
 
     // Privates
-    /** @param {String} reg // Register to push from */
-    #push(reg) {
+    private push(reg: string) {
         this.#m_output += "    push " + reg + "\n";
         this.#m_stack_size++;
     }
-    /** @param {String} reg // Register to pop to */
-    #pop(reg) {
+    private pop(reg: string) {
         this.#m_output += "    pop " + reg + "\n";
         this.#m_stack_size--;
     }
-
     // Variables
-    /** @type {classes.NodeProg} */
-    #m_prog;
-    /** @type {number} */
-    #m_stack_size = 0;
-    /** @type {string} */
-    #m_output;
-    /** @typedef {InstanceType<typeof Var>} VarT */
-    /** @type {Map<string, VarT>} */
-    #m_vars = new Map();
+    #m_prog: NodeProg;
+    #m_stack_size: number = 0;
+    #m_output: string;
+    #m_vars: Map<string, Var> = new Map();
 
 }
 function visitVariant(visitor, variant) {
@@ -121,5 +93,3 @@ function visitVariant(visitor, variant) {
     if (!fn) throw new TypeError("no visitor for " + className);
     return fn.call(visitor, variant);
 }
-
-module.exports = { Generator };
