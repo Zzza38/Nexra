@@ -13,5 +13,10 @@ const strings = {
         return /^\s$/.test(c);
     }
 }
-
-module.exports = { strings };
+function visit(visitor, obj) {
+    const className = obj.constructor.name;
+    const fn = visitor[className];
+    if (!fn) throw new TypeError("no visitor for " + className);
+    return fn(obj);
+}
+module.exports = { strings, visit };

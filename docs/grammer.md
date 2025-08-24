@@ -6,7 +6,7 @@ $$
         \text{exit}([\text{expr}]); \\
         \text{let}\space\text{ident} = [\text{expr}];
     \end{cases} \\
-    [\text{expr}] &\to 
+    [\text{expr}] &\to
     \begin{cases}
         \text{int\_lit} \\
         \text{ident}
