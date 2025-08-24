@@ -28,18 +28,18 @@ class Token {
 // Expression Nodes
 class NodeExprIntLit {
     /** @type {Token} */
-    value
+    int_lit
     /** @param {Token} int_lit */
     constructor(int_lit) {
-        this.value = int_lit;
+        this.int_lit = int_lit;
     }
 };
 class NodeExprIdent {
     /** @type {Token} */
-    value
+    ident
     /** @param {Token} ident */
     constructor(ident) {
-        this.value = ident;
+        this.ident = ident;
     }
 };
 class NodeExpr {

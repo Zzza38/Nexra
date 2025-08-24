@@ -3,7 +3,7 @@
 
 // Imports
 const fs = require("fs");
-const { exec } = require("child_process");
+const { spawn } = require("child_process");
 
 const tokenization = require("./tokenization");
 const parsing = require("./parsing");
@@ -28,17 +28,17 @@ function main() {
     const tokens = tokenizer.tokenize();
 
     const parser = new parsing.Parser(tokens);
-    const tree = parser.parse();
+    const tree = parser.parse_prog();
 
     if (!tree) {
-        console.error("No exit statement found");
+        console.error("Invalid Program...");
         return 1;
     }
-    const generator =  new generation.Generator(tree);
-    const ASM = generator.generate();
-
+    const generator = new generation.Generator(tree);
+    const ASM = generator.gen_prog();
     fs.writeFileSync("./build/out.asm", ASM);
-    exec("nasm -f elf64 build/out.asm && ld build/out.o -o build/out");
+    spawn("sh", ["-c", "nasm -f elf64 build/out.asm -o build/out.o && ld -o build/out build/out.o"], { stdio: "inherit" })
+        .on("error", e => console.error("sh spawn failed:", e))
     return 0;
 }
 

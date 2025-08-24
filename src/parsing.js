@@ -75,7 +75,7 @@ class Parser {
     /** @returns {classes.NodeProg} */
     parse_prog() {
         /** @type {classes.NodeProg} */
-        let prog;
+        let prog = new classes.NodeProg([]);
         while (this.#peek()) {
             /** @type {classes.NodeStmt} */
             let stmt = this.parse_stmt();
@@ -86,7 +86,7 @@ class Parser {
                 process.exit(1);
             }
         }
-        return;
+        return prog;
     }
 
     /**
