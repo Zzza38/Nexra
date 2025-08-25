@@ -10,15 +10,7 @@ export class Tokenizer {
     }
     tokenize(): Token[] {
         let tokens: Token[] = [];
-        let buf = {
-            value: "",
-            clear() {
-                this.value = "";
-            },
-            push(val) {
-                this.value += val;
-            }
-        }
+        let buf = new strings.stream;
         while (this.peek()) {
             if (strings.isAlpha(this.peek())) {
                 buf.push(this.consume());

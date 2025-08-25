@@ -8,9 +8,10 @@ import { spawn } from "child_process";
 import * as tokenization from "./tokenization.js";
 import * as parsing from "./parsing.js";
 import * as generation from "./generation.js";
+import { NodeProg, Token } from "./classes.js";
 
 // Constants
-const commandLineArguments = process.argv;
+const commandLineArguments: string[] = process.argv;
 
 // Main
 function main() {
@@ -19,22 +20,22 @@ function main() {
         console.error("Correct usage: 'nexra <file>'");
         return 1;
     }
-    const file = commandLineArguments[2];
-    const buffer = fs.readFileSync(file);
-    const contents = buffer.toString();
+    const file: string = commandLineArguments[2];
+    const buffer: Buffer = fs.readFileSync(file);
+    const contents: string = buffer.toString();
 
-    const tokenizer = new tokenization.Tokenizer(contents);
-    const tokens = tokenizer.tokenize();
+    const tokenizer: tokenization.Tokenizer = new tokenization.Tokenizer(contents);
+    const tokens: Token[] = tokenizer.tokenize();
 
-    const parser = new parsing.Parser(tokens);
-    const tree = parser.parse_prog();
+    const parser: parsing.Parser = new parsing.Parser(tokens);
+    const tree: NodeProg = parser.parse_prog();
 
     if (!tree) {
         console.error("Invalid Program...");
         return 1;
     }
-    const generator = new generation.Generator(tree);
-    const ASM = generator.gen_prog();
+    const generator: generation.Generator = new generation.Generator(tree);
+    const ASM: string = generator.gen_prog();
     fs.writeFileSync("./build/out.asm", ASM);
     spawn("sh", ["-c", "nasm -f elf64 build/out.asm -o build/out.o && ld -o build/out build/out.o"], { stdio: "inherit" })
         .on("error", e => console.error("sh spawn failed:", e))
