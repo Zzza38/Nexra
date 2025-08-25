@@ -23,10 +23,11 @@ export class Parser {
         this.m_index = 0;
     }
     parse_term(): NodeTerm {
-        if (this.peek() && this.peek().type === TokenType.int_lit) {
-            return { var: { int_lit: this.consume(), __type: "NodeTermIntLit" }, __type: "NodeTerm" };
-        } else if (this.peek() && this.peek().type === TokenType.ident) {
-            return { var: { ident: this.consume(), __type: "NodeTermIdent" }, __type: "NodeTerm" };
+        let int_lit: Token, ident: Token;
+        if (int_lit = this.tryConsume(TokenType.int_lit)) {
+            return { var: { int_lit: int_lit, __type: "NodeTermIntLit" }, __type: "NodeTerm" };
+        } else if (ident = this.tryConsume(TokenType.ident)) {
+            return { var: { ident: ident, __type: "NodeTermIdent" }, __type: "NodeTerm" };
         } else {
             return null;
         }
@@ -35,11 +36,10 @@ export class Parser {
     parse_expr(): NodeExpr {
         let term: NodeTerm;
         if (term = this.parse_term()) {
-            if (this.peek() && this.peek().type === TokenType.plus) {
-                let bin_expr: NodeBinExpr, lhs: NodeExpr, rhs: NodeExpr;
+            if (this.tryConsume(TokenType.plus)) {
+                let bin_expr: NodeBinExpr, rhs: NodeExpr;
                 let lhs_expr: NodeExpr = { var: term, __type: "NodeExpr" };
                 let bin_expr_add: NodeBinExprAdd = { lhs: lhs_expr, __type: "NodeBinExprAdd" };
-                this.consume();
 
                 if (rhs = this.parse_expr()) {
                     bin_expr_add.rhs = rhs;
@@ -79,23 +79,15 @@ export class Parser {
                 console.error("Invalid Expression");
                 process.exit(1);
             }
-            if (this.peek() && this.peek().type === TokenType.close_paren) {
-                this.consume()
-            } else {
-                console.error("Expected ')'");
-                process.exit(1);
-            }
-            if (this.peek() && this.peek().type === TokenType.semi) {
-                this.consume();
-            } else {
-                console.error("Expected ';'");
-                process.exit(1);
-            }
+            this.tryConsume(TokenType.close_paren, "Expected ')'");
+            this.tryConsume(TokenType.semi, "Expected ';'");
             return {
                 var: stmt_exit,
                 __type: 'NodeStmt'
             };
-        } else if (this.peek() && this.peek().type === TokenType.let && this.peek(1) && this.peek(1).type === TokenType.ident && this.peek(2) && this.peek(2).type === TokenType.eq) {
+        } else if (this.peek() && this.peek().type === TokenType.let &&
+            this.peek(1) && this.peek(1).type === TokenType.ident &&
+            this.peek(2) && this.peek(2).type === TokenType.eq) {
             this.consume();
 
             let stmt_let: NodeStmtLet = {
@@ -111,12 +103,7 @@ export class Parser {
                 console.error("Invalid Expression");
                 process.exit(1);
             }
-            if (this.peek() && this.peek().type === TokenType.semi) {
-                this.consume();
-            } else {
-                console.error("Expected ';'");
-                process.exit(1);
-            }
+            this.tryConsume(TokenType.semi, "Expected ';'");
             return {
                 var: stmt_let,
                 __type: 'NodeStmt',
@@ -152,8 +139,18 @@ export class Parser {
     private consume(): Token {
         return this.m_tokens[this.m_index++];
     }
-    private tryConsume() {
-        
+    private tryConsume(type: TokenType, err_msg?: string): Token {
+        if (this.peek() && this.peek().type === type) {
+            return this.consume();
+        } else {
+            if (err_msg) {
+                console.error(err_msg);
+                process.exit(1);
+            } else {
+                return null;
+            }
+
+        }
     }
     private m_tokens: Token[];
     private m_index: number;
