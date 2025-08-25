@@ -9,8 +9,8 @@ To build the project, you will need to have [Node.js](https://nodejs.org/) insta
 
 ```
 npm i
-npm link
 npm run build
+npm link
 ```
 ### Usage
 To use Nexra, you can run the following command:
