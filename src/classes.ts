@@ -12,6 +12,7 @@ export enum TokenType {
     let = "let",
     eq = "=",
     plus = "+",
+    star = "*",
 }
 
 export interface Token {
@@ -22,7 +23,7 @@ export interface Token {
 // ===== Expression Node =====
 export interface NodeExpr {
     readonly __type: "NodeExpr";
-    var: NodeTerm | NodeBinExpr;
+    variant?: NodeTerm | NodeBinExpr;
 }
 
 // ===== Terms (and conditions) =====
@@ -38,7 +39,7 @@ export interface NodeTermIdent {
 
 export interface NodeTerm {
     readonly __type: "NodeTerm";
-    var: NodeTermIntLit | NodeTermIdent;
+    variant?: NodeTermIntLit | NodeTermIdent;
 }
 
 // ===== Binary Expressions =====
@@ -51,12 +52,12 @@ export interface NodeBinExprAdd {
 export interface NodeBinExprMulti {
     readonly __type: "NodeBinExprMulti";
     lhs?: NodeExpr;
-    rhs?: NodeExpr; 
+    rhs?: NodeExpr;
 }
 
 export interface NodeBinExpr {
     readonly __type: "NodeBinExpr";
-    var: NodeBinExprAdd | NodeBinExprMulti;
+    variant?: NodeBinExprAdd | NodeBinExprMulti;
 }
 
 // ===== Program Nodes =====
@@ -67,7 +68,7 @@ export interface NodeProg {
 
 export interface NodeStmt {
     readonly __type: "NodeStmt";
-    var: NodeStmtExit | NodeStmtLet;
+    variant?: NodeStmtExit | NodeStmtLet;
 }
 
 export interface NodeStmtExit {

@@ -1,6 +1,17 @@
-// @ts-check
 // Imports
-import { NodeExpr, NodeTermIdent, NodeTermIntLit, NodeProg, NodeStmt, NodeStmtExit, NodeStmtLet, NodeTerm, NodeBinExpr } from './classes.js';
+import { 
+    NodeExpr, 
+    NodeTermIdent, 
+    NodeTermIntLit, 
+    NodeProg, 
+    NodeStmt, 
+    NodeStmtExit, 
+    NodeStmtLet, 
+    NodeTerm, 
+    NodeBinExpr,
+    NodeBinExprAdd,
+    NodeBinExprMulti
+} from './classes.js';
 import { visit, Visitor } from './helpers.js';
 // Classes
 class Var {
@@ -33,7 +44,31 @@ export class Generator {
                 gen.push(offset);
             }
         });
-        visit(TermVisitor, term.var);
+        visit(TermVisitor, term.variant);
+    }
+
+    gen_bin_expr(bin_expr: NodeBinExpr) {
+        const BinExprVisitor: Visitor = new Visitor(this, {
+            NodeBinExprAdd(add: NodeBinExprAdd) {
+                const gen: Generator = this.visitor;
+                gen.gen_expr(add.lhs);
+                gen.gen_expr(add.rhs); 
+                gen.pop("rax");
+                gen.pop("rbx");
+                gen.m_output += "    add rax, rbx\n";
+                gen.push("rax");
+            },
+            NodeBinExprMulti(multi: NodeBinExprMulti) {
+                const gen: Generator = this.visitor;
+                gen.gen_expr(multi.lhs);
+                gen.gen_expr(multi.rhs); 
+                gen.pop("rax");
+                gen.pop("rbx");
+                gen.m_output += "    imul rax, rbx\n";
+                gen.push("rax");
+            }
+        });
+        visit(BinExprVisitor, bin_expr.variant);
     }
     gen_expr(expr: NodeExpr) {
         const ExprVisitor: Visitor = new Visitor(this, {
@@ -43,15 +78,10 @@ export class Generator {
             },
             NodeBinExpr(bin_expr: NodeBinExpr) {
                 const gen: Generator = this.visitor;
-                gen.gen_expr(bin_expr.var.lhs);
-                gen.gen_expr(bin_expr.var.rhs); 
-                gen.pop("rax");
-                gen.pop("rbx");
-                gen.m_output += "    add rax, rbx\n";
-                gen.push("rax");
+                gen.gen_bin_expr(bin_expr);
             }
         });
-        visit(ExprVisitor, expr.var)
+        visit(ExprVisitor, expr.variant)
     }
     gen_stmt(stmt: NodeStmt) {
         const StmtVisitor: Visitor = new Visitor(this, {
@@ -72,7 +102,7 @@ export class Generator {
                 gen.gen_expr(stmt_let.expr);
             },
         });
-        visit(StmtVisitor, stmt.var);
+        visit(StmtVisitor, stmt.variant);
     }
 
     gen_prog(): string {

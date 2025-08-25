@@ -58,6 +58,10 @@ export class Tokenizer {
                 this.consume();
                 tokens.push({ type: TokenType.plus });
                 continue;
+            } else if (this.peek() === '*') {
+                this.consume();
+                tokens.push({ type: TokenType.star });
+                continue;
             } else if (strings.isWhiteSpace(this.peek())) {
                 this.consume();
                 continue;

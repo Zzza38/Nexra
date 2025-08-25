@@ -7,15 +7,16 @@ Grammar can be found [here](./docs/grammar.md).
 ### Build
 To build the project, you will need to have [Node.js](https://nodejs.org/) installed. Once you have Node.js, you can build the project by running the following command in the root directory of the project:
 
-```
+```bash
 npm i
 npm run build
 npm link
 ```
-### Usage
-To use Nexra, you can run the following command:
 
-```
+### Usage
+
+To use Nexra, you can run the following command on Linux with ```nasm``` and ```ld``` installed:
+```bash
 nexra <input_file>
 ```
 

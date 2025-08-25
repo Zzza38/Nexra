@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-// @ts-check
 
 // Imports
 import * as fs from "fs";
@@ -39,6 +38,7 @@ function main() {
     fs.writeFileSync("./build/out.asm", ASM);
     spawn("sh", ["-c", "nasm -f elf64 build/out.asm -o build/out.o && ld -o build/out build/out.o"], { stdio: "inherit" })
         .on("error", e => console.error("sh spawn failed:", e))
+        .on("spawn", () => console.log("Compiled successfully to build/out"));
     return 0;
 }
 
