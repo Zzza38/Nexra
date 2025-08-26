@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "npx tsc",
-    "test": "tsx src/main.ts ./test/test.nxa"
+    "test": "tsx src/main.ts ./test/test.nxa --run"
   },
   "bin": {
     "nexra": "dist/main.js"

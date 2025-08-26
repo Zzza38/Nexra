@@ -13,6 +13,8 @@ export enum TokenType {
     eq = "=",
     plus = "+",
     star = "*",
+    dash = "-",
+    slash = "/"
 }
 
 export interface Token {

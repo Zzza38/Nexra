@@ -14,10 +14,7 @@ import {
     NodeBinExprMulti,
     NodeTerm
 } from './classes.js';
-import {
-    // is_bin_op,
-    bin_prec
-} from './helpers.js'
+import { bin_prec } from './helpers.js'
 
 export class Parser {
     constructor(tokens) {

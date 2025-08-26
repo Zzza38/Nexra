@@ -40,7 +40,7 @@ function main() {
     const ASM: string = generator.gen_prog();
     console.log("✅ Generation complete");
     fs.writeFileSync("./build/out.asm", ASM);
-    
+
     spawn("/usr/bin/nasm", ["-f", "elf64", "build/out.asm", "-o", "build/out.o"], { stdio: "inherit" })
         .on("error", e => {
             console.error("❌ nasm spawn failed:", e);
@@ -60,7 +60,16 @@ function main() {
                 .on("exit", code2 => {
                     if (code2 === 0) {
                         console.log(`✅ Compiled ${file} successfully to ./build/out`);
-                        process.exit(0);
+                        if (commandLineArguments[3] === "--run") {
+                            spawn("./build/out", { stdio: "inherit" })
+                                .on("error", e => {
+                                    console.error("❌ run spawn failed:", e);
+                                    process.exit(1);
+                                })
+                                .on("exit", code3 => {
+                                    console.log(`✅ run exited with code ${code3}`);
+                                });
+                        }
                     } else {
                         console.error(`❌ ld exited with code ${code2}`);
                         process.exit(1);

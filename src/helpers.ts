@@ -58,9 +58,11 @@ export function is_bin_op(token: Token): boolean {
 export function bin_prec(token: TokenType): number {
     switch (token) {
         case TokenType.plus:
-            return 1;
+        case TokenType.dash:
+            return 0;
         case TokenType.star:
-            return 2;
+        case TokenType.slash:
+            return 1;
         default:
             return null;
     }

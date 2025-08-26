@@ -22,7 +22,7 @@ export class Tokenizer {
                     buf.clear();
                     continue;
                 } else if (buf.value === "let") {
-                    tokens.push({ type: TokenType.let});
+                    tokens.push({ type: TokenType.let });
                     buf.clear();
                     continue;
                 } else {
@@ -61,6 +61,14 @@ export class Tokenizer {
             } else if (this.peek() === '*') {
                 this.consume();
                 tokens.push({ type: TokenType.star });
+                continue;
+            } else if (this.peek() === '-') {
+                this.consume();
+                tokens.push({ type: TokenType.dash });
+                continue;
+            } else if (this.peek() === '/') {
+                this.consume();
+                tokens.push({ type: TokenType.slash });
                 continue;
             } else if (strings.isWhiteSpace(this.peek())) {
                 this.consume();
