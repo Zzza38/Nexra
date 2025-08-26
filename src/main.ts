@@ -13,8 +13,7 @@ import { NodeProg, Token } from "./classes.js";
 const commandLineArguments: string[] = process.argv;
 
 // Main
-async function main() {
-    await spawn("cmd", ["-c", "echo test"], {stdio: "inherit"}).on;
+function main() {
     if (commandLineArguments.length < 3) {
         console.error("❌ Incorrect usage;");
         console.error("❌ Correct usage: 'nexra <file>'");
