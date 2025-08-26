@@ -35,7 +35,7 @@ export class Generator {
             NodeTermIdent(term_ident: NodeTermIdent) {
                 const gen: Generator = this.visitor;
                 if (!gen.m_vars.has(term_ident.ident.value)) {
-                    console.error("Undeclared identifier: " + term_ident.ident.value);
+                    console.error("❌ndeclared identifier: " + term_ident.ident.value);
                     process.exit(1);
                 }
                 const v: Var = gen.m_vars.get(term_ident.ident.value);
@@ -95,7 +95,7 @@ export class Generator {
             NodeStmtLet(stmt_let: NodeStmtLet) {
                 const gen: Generator = this.visitor;
                 if (gen.m_vars.has(stmt_let.ident.value)) {
-                    console.error("Identifier already used: " + stmt_let.ident.value);
+                    console.error("❌dentifier already used: " + stmt_let.ident.value);
                     process.exit(1);
                 }
                 gen.m_vars.set(stmt_let.ident.value, new Var(gen.m_stack_size));

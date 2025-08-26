@@ -6,8 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "npx tsc",
-    "test": "nexra ./test/test.nxa",
-    "buildAndTest": "npm run build && npm run test"
+    "test": "tsx src/main.ts ./test/test.nxa"
   },
   "bin": {
     "nexra": "dist/main.js"
@@ -24,7 +23,10 @@
   "homepage": "https://github.com/Zzza38/Nexra#readme",
   "devDependencies": {
     "@types/node": "^24.3.0",
-    "ts-migrate": "^0.1.35",
+    "tsx": "^4.20.5"
+  },
+  "dependencies": {
+    "tsc": "^2.0.4",
     "typescript": "^5.9.2"
   }
 }

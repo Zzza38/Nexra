@@ -66,7 +66,7 @@ export class Tokenizer {
                 this.consume();
                 continue;
             } else {
-                console.error("You messed up.");
+                console.error("❌ou messed up.");
                 process.exit(1);
             }
         }

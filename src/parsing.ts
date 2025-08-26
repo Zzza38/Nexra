@@ -50,7 +50,7 @@ export class Parser {
             let next_min_prec: number = prec + 1;
             let expr_rhs = this.parse_expr(next_min_prec);
             if (!expr_rhs) {
-                console.error("Unable to parse expression");
+                console.error("❌nable to parse expression");
                 process.exit(1);
             }
 
@@ -84,7 +84,7 @@ export class Parser {
             if (node_expr) {
                 stmt_exit = { expr: node_expr, __type: "NodeStmtExit" };
             } else {
-                console.error("Invalid Expression");
+                console.error("❌nvalid Expression");
                 process.exit(1);
             }
             this.try_consume(TokenType.close_paren, "Expected ')'");
@@ -108,7 +108,7 @@ export class Parser {
             if (expr) {
                 stmt_let.expr = expr;
             } else {
-                console.error("Invalid Expression");
+                console.error("❌nvalid Expression");
                 process.exit(1);
             }
             this.try_consume(TokenType.semi, "Expected ';'");
@@ -131,7 +131,7 @@ export class Parser {
             if (stmt) {
                 prog.stmts.push(stmt);
             } else {
-                console.error("Invalid statement");
+                console.error("❌nvalid statement");
                 process.exit(1);
             }
         }

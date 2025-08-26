@@ -10,7 +10,7 @@
         "types": [
             "node"
         ],
-        "outDir": "./dist" // Specify output directory for compiled files
+        "outDir": "./dist", // Specify output directory for compiled files
     },
     "exclude": [
         "node_modules",
