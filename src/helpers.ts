@@ -1,5 +1,4 @@
 import {
-    Token,
     TokenType
 } from "./classes.js";
 
@@ -22,7 +21,7 @@ export const strings = {
         clear() {
             this.value = "";
         }
-        push(val) {
+        push(val: string) {
             this.value += val;
         }
     }
@@ -46,15 +45,6 @@ export function visit(visitor: Visitor, obj: any) {
 }
 
 // Binary Operation Functions
-export function is_bin_op(token: Token): boolean {
-    switch (token.type) {
-        case TokenType.plus:
-        case TokenType.star:
-            return true;
-        default:
-            return false;
-    }
-}
 export function bin_prec(token: TokenType): number {
     switch (token) {
         case TokenType.plus:

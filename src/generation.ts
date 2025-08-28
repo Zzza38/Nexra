@@ -17,7 +17,10 @@ import {
     NodeScope,
     NodeStmtIf
 } from './classes.js';
-import { visit, Visitor, assert } from './helpers.js';
+import { visit,
+    Visitor,
+    // assert
+} from './helpers.js';
 
 // Classes
 interface Var {

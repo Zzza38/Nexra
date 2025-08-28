@@ -1,5 +1,5 @@
 ### Nexra
-Nexra is a compiled programming language based on JavaScript. Currently, the language compiles to assembly for NASM and LD to compile to native binaries.
+Nexra is a compiled programming language based on JavaScript. Currently, the language compiles to assembly for ```nasm``` and ```ld``` compile to native binaries.
 
 ### Grammar
 Grammar can be found [here](./docs/grammar.md).

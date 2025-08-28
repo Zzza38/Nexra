@@ -1,8 +1,7 @@
 {
     "compilerOptions": {
-        "checkJs": true, // optional: JS type checking via JSDoc
         "target": "ES2022",
-        "module": "nodenext", // or "NodeNext" if you’re ESM
+        "module": "nodenext",
         "moduleResolution": "nodenext",
         "lib": [
             "ES2022"
@@ -10,7 +9,7 @@
         "types": [
             "node"
         ],
-        "outDir": "./dist", // Specify output directory for compiled files
+        "outDir": "./dist"
     },
     "exclude": [
         "node_modules",

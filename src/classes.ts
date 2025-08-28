@@ -1,5 +1,6 @@
 // Tokens
 
+// noinspection SpellCheckingInspection
 export enum TokenType {
     // Special / control tokens
     exit = "exit",                  // Exit or end-of-program
