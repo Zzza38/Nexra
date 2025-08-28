@@ -4,8 +4,11 @@ $$
     [\text{Stmt}] &\to
     \begin{cases}
         \text{exit}([\text{Expr}]); \\
-        \text{let}\space\text{ident} = [\text{Expr}];
+        \text{let}\space\text{ident} = [\text{Expr}]; \\
+        \text{if}\space([\text{Expr}])\space[\text{Scope}] \\
+        [\text{Scope}]
     \end{cases} \\
+    [\text{Scope}] &\to \space \{[\text{Stmt}^*]\} \\
     [\text{Expr}] &\to
     \begin{cases}
         \text{Term} \\
@@ -22,7 +25,8 @@ $$
     [\text{Term}] &\to
     \begin{cases}
         \text{int\_lit} \\
-        \text{ident}
+        \text{ident} \\
+        ([\text{Expr}])
     \end{cases}
 \end{align}
 $$

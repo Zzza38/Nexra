@@ -12,9 +12,14 @@ import {
     NodeBinExpr,
     NodeBinExprAdd,
     NodeBinExprMulti,
-    NodeTerm
+    NodeTerm,
+    NodeBinExprSub,
+    NodeBinExprDiv,
+    NodeTermParen,
+    NodeScope,
+    NodeStmtIf
 } from './classes.js';
-import { bin_prec } from './helpers.js'
+import { bin_prec, assert } from './helpers.js'
 
 export class Parser {
     constructor(tokens) {
@@ -22,11 +27,25 @@ export class Parser {
         this.m_index = 0;
     }
     parse_term(): NodeTerm {
-        let int_lit: Token, ident: Token;
+        let int_lit: Token, ident: Token, open_paren: Token, close_paren: Token;
         if (int_lit = this.try_consume(TokenType.int_lit)) {
             return { variant: { int_lit: int_lit, __type: "NodeTermIntLit" }, __type: "NodeTerm" };
         } else if (ident = this.try_consume(TokenType.ident)) {
             return { variant: { ident: ident, __type: "NodeTermIdent" }, __type: "NodeTerm" };
+        } else if (open_paren = this.try_consume(TokenType.open_paren)) {
+            let expr: NodeExpr = this.parse_expr();
+            if (!expr) {
+                error("Expected expression");
+            }
+            if (!(close_paren = this.try_consume(TokenType.close_paren))) {
+                error("Expected ')'");
+            }
+            let term_paren: NodeTermParen = { __type: "NodeTermParen" };
+            term_paren.expr = expr;
+            let term: NodeTerm = { __type: "NodeTerm" };
+            term.variant = term_paren;
+            return term;
+
         } else {
             return null;
         }
@@ -47,8 +66,7 @@ export class Parser {
             let next_min_prec: number = prec + 1;
             let expr_rhs = this.parse_expr(next_min_prec);
             if (!expr_rhs) {
-                console.error("❌nable to parse expression");
-                process.exit(1);
+                error("Unable to parse expression");
             }
 
             let expr: NodeBinExpr = { __type: "NodeBinExpr" };
@@ -64,6 +82,18 @@ export class Parser {
                 multi.lhs = expr_lhs2;
                 multi.rhs = expr_rhs;
                 expr.variant = multi;
+            } else if (op.type === TokenType.dash) {
+                let sub: NodeBinExprSub = { __type: "NodeBinExprSub" };
+                sub.lhs = expr_lhs2;
+                sub.rhs = expr_rhs;
+                expr.variant = sub;
+            } else if (op.type === TokenType.fslash) {
+                let div: NodeBinExprDiv = { __type: "NodeBinExprDiv" };
+                div.lhs = expr_lhs2;
+                div.rhs = expr_rhs;
+                expr.variant = div;
+            } else {
+                assert(false, "Unexpected binary operator");
             }
 
             expr_lhs.variant = expr;
@@ -72,6 +102,7 @@ export class Parser {
     }
 
     parse_stmt(): NodeStmt {
+        let open_curly: Token, if_: Token;
         if (this.peek() && this.peek().type === TokenType.exit && this.peek(1) && this.peek(1).type === TokenType.open_paren) {
             this.consume();
             this.consume();
@@ -81,8 +112,7 @@ export class Parser {
             if (node_expr) {
                 stmt_exit = { expr: node_expr, __type: "NodeStmtExit" };
             } else {
-                console.error("❌nvalid Expression");
-                process.exit(1);
+                error("Invalid Expression");
             }
             this.try_consume(TokenType.close_paren, "Expected ')'");
             this.try_consume(TokenType.semi, "Expected ';'");
@@ -105,13 +135,40 @@ export class Parser {
             if (expr) {
                 stmt_let.expr = expr;
             } else {
-                console.error("❌nvalid Expression");
-                process.exit(1);
+                error("Invalid Expression");
             }
             this.try_consume(TokenType.semi, "Expected ';'");
             return {
                 variant: stmt_let,
                 __type: 'NodeStmt',
+            };
+        } else if (open_curly = this.try_consume(TokenType.open_curly)) {
+            let scope: NodeScope = { __type: 'NodeScope', stmts: [] };
+            let stmt: NodeStmt = { __type: "NodeStmt" };
+            while (stmt = this.parse_stmt()) {
+                scope.stmts.push(stmt);
+            }
+            this.try_consume(TokenType.close_curly, "Expected '}'");
+            stmt = { __type: "NodeStmt" };
+            stmt.variant = scope;
+            return stmt;
+        } else if (if_ = this.try_consume(TokenType.if)) {
+            this.try_consume(TokenType.open_paren, "Expected '('");
+            let expr: NodeExpr, stmt_if: NodeStmtIf = { __type: "NodeStmtIf" };
+            if (expr = this.parse_expr()) {
+                stmt_if.expr = expr;
+            } else {
+                error("Invalid Expression");
+            }
+            this.try_consume(TokenType.close_paren, "Expected ')' after 'if' condition");
+            let if_stmt: NodeStmt;
+            if (if_stmt = this.parse_stmt()) {
+                stmt_if.stmt = if_stmt;
+            }
+            
+            return {
+                __type: "NodeStmt",
+                variant: stmt_if
             };
         } else {
             return null;
@@ -128,8 +185,7 @@ export class Parser {
             if (stmt) {
                 prog.stmts.push(stmt);
             } else {
-                console.error("❌nvalid statement");
-                process.exit(1);
+                error(`Invalid statement: ${this.peek().type}`);
             }
         }
         return prog;
@@ -149,8 +205,7 @@ export class Parser {
             return this.consume();
         } else {
             if (err_msg) {
-                console.error(err_msg);
-                process.exit(1);
+                error(err_msg);
             } else {
                 return null;
             }
@@ -159,4 +214,9 @@ export class Parser {
     }
     private m_tokens: Token[];
     private m_index: number;
+}
+
+const error = (message: string) => {
+    console.error("❌ Error during parsing: " + message);
+    process.exit(1);
 }

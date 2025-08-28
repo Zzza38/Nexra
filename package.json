@@ -1,12 +1,12 @@
 {
-  "name": "nexra",
+  "name": "tsc-executable",
   "version": "1.0.0",
-  "description": "An object based compiled programming language based on Typescript",
+  "description": "TypeScript and JavaScript machine code compiler written in TypeScript.",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "build": "npx tsc",
-    "test": "tsx src/main.ts ./test/test.nxa --run"
+    "test": "npx tsx src/main.ts ./test/test.nxa --exit-code"
   },
   "bin": {
     "nexra": "dist/main.js"
@@ -26,7 +26,6 @@
     "tsx": "^4.20.5"
   },
   "dependencies": {
-    "tsc": "^2.0.4",
     "typescript": "^5.9.2"
   }
 }

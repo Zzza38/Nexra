@@ -4,11 +4,11 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug (ts-node)",
-      "runtimeExecutable": "ts-node",
+      "name": "Debug (tsx)",
+      "runtimeExecutable": "npm",
       "program": "${workspaceFolder}/src/main.ts",     // your TS entry
       "cwd": "${workspaceFolder}",
-      "args": ["test/test.nx"],
+      "args": ["run", "test"],
       "sourceMaps": true,
       "skipFiles": ["<node_internals>/**"]
     }

@@ -59,11 +59,19 @@ export function bin_prec(token: TokenType): number {
     switch (token) {
         case TokenType.plus:
         case TokenType.dash:
-            return 0;
-        case TokenType.star:
-        case TokenType.slash:
             return 1;
+        case TokenType.star:
+        case TokenType.fslash:
+            return 2;
         default:
             return null;
     }
 }
+
+// Assert
+export const assert = (value: any, message: string) => {
+    if (!value) {
+        console.log("❌ Assert failed: " + message);
+        process.exit(2);
+    }
+};

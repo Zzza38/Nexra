@@ -15,9 +15,7 @@ const commandLineArguments: string[] = process.argv;
 // Main
 function main() {
     if (commandLineArguments.length < 3) {
-        console.error("❌ Incorrect usage;");
-        console.error("❌ Correct usage: 'nexra <file>'");
-        process.exit(1);
+        error("---Incorrect usage---\n❌ Correct usage: 'nexra <file> (args)'")
     }
     const file: string = commandLineArguments[2];
     const buffer: Buffer = fs.readFileSync(file);
@@ -31,9 +29,9 @@ function main() {
     const parser: parsing.Parser = new parsing.Parser(tokens);
     const tree: NodeProg = parser.parse_prog();
     console.log("✅ Parsing complete");
+
     if (!tree) {
-        console.error("❌ Invalid Program...");
-        process.exit(1);
+        error("Invalid program");
     }
 
     const generator: generation.Generator = new generation.Generator(tree);
@@ -43,39 +41,39 @@ function main() {
 
     spawn("/usr/bin/nasm", ["-f", "elf64", "build/out.asm", "-o", "build/out.o"], { stdio: "inherit" })
         .on("error", e => {
-            console.error("❌ nasm spawn failed:", e);
-            process.exit(1);
+            error(`nasm spawn failed, ${JSON.stringify(e)}`)
         })
         .on("exit", code => {
             if (code !== 0) {
-                console.error(`❌ nasm exited with code ${code}`);
-                return process.exit(1);
+                error(`nasm exited with code ${code}`);
             }
 
             spawn("ld", ["-o", "build/out", "build/out.o"], { stdio: "inherit" })
                 .on("error", e => {
-                    console.error("❌ ld spawn failed:", e);
-                    process.exit(1);
+                    error(`ld spawn failed, ${JSON.stringify(e)}`)
                 })
                 .on("exit", code2 => {
                     if (code2 === 0) {
                         console.log(`✅ Compiled ${file} successfully to ./build/out`);
-                        if (commandLineArguments[3] === "--run") {
+                        if (commandLineArguments[3] === "--exit-code") {
                             spawn("./build/out", { stdio: "inherit" })
                                 .on("error", e => {
-                                    console.error("❌ run spawn failed:", e);
-                                    process.exit(1);
+                                    error(`./build/out spawn failed, ${JSON.stringify(e)}`);
                                 })
                                 .on("exit", code3 => {
-                                    console.log(`✅ run exited with code ${code3}`);
+                                    console.log(`✅ ./build/out exited with code ${code3}`);
                                 });
                         }
                     } else {
-                        console.error(`❌ ld exited with code ${code2}`);
-                        process.exit(1);
+                        error(`ld exited with code ${code}`);
                     }
                 });
         });
 }
 
 main();
+
+const error = (message: string) => {
+    console.error("❌ Error in main: " + message);
+    process.exit(1);
+}

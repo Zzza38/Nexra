@@ -12,6 +12,7 @@ export class Tokenizer {
         let tokens: Token[] = [];
         let buf = new strings.stream;
         while (this.peek()) {
+            let c: string = this.peek();
             if (strings.isAlpha(this.peek())) {
                 buf.push(this.consume());
                 while (this.peek() && strings.isAlphaNumeric(this.peek())) {
@@ -20,15 +21,18 @@ export class Tokenizer {
                 if (buf.value === "exit") {
                     tokens.push({ type: TokenType.exit });
                     buf.clear();
-                    continue;
+
                 } else if (buf.value === "let") {
                     tokens.push({ type: TokenType.let });
                     buf.clear();
-                    continue;
+
+                } else if (buf.value === "if") {
+                    tokens.push({ type: TokenType.if });
+                    buf.clear();
                 } else {
                     tokens.push({ type: TokenType.ident, value: buf.value });
                     buf.clear();
-                    continue;
+
                 }
             } else if (strings.isNumber(this.peek())) {
                 buf.push(this.consume());
@@ -37,45 +41,49 @@ export class Tokenizer {
                 }
                 tokens.push({ type: TokenType.int_lit, value: buf.value });
                 buf.clear();
-                continue;
+
             } else if (this.peek() === '(') {
                 this.consume();
                 tokens.push({ type: TokenType.open_paren });
-                continue;
+
             } else if (this.peek() === ')') {
                 this.consume();
                 tokens.push({ type: TokenType.close_paren });
-                continue;
+
             } else if (this.peek() === ';') {
                 this.consume();
                 tokens.push({ type: TokenType.semi });
-                continue;
+
             } else if (this.peek() === '=') {
                 this.consume();
                 tokens.push({ type: TokenType.eq });
-                continue;
+
             } else if (this.peek() === '+') {
                 this.consume();
                 tokens.push({ type: TokenType.plus });
-                continue;
+
             } else if (this.peek() === '*') {
                 this.consume();
                 tokens.push({ type: TokenType.star });
-                continue;
+
             } else if (this.peek() === '-') {
                 this.consume();
                 tokens.push({ type: TokenType.dash });
-                continue;
+
             } else if (this.peek() === '/') {
                 this.consume();
-                tokens.push({ type: TokenType.slash });
-                continue;
+                tokens.push({ type: TokenType.fslash });
+
+            } else if (this.peek() === '{') {
+                this.consume();
+                tokens.push({ type: TokenType.open_curly });
+            } else if (this.peek() === '}') {
+                this.consume();
+                tokens.push({ type: TokenType.close_curly });
             } else if (strings.isWhiteSpace(this.peek())) {
                 this.consume();
-                continue;
             } else {
-                console.error("❌ou messed up.");
-                process.exit(1);
+                error(`Unexpected character: ${this.peek()}`);
             }
         }
         this.m_index = 0;
@@ -93,4 +101,9 @@ export class Tokenizer {
     }
     private m_src: string;
     private m_index: number;
+}
+
+const error = (message: string) => {
+    console.error("❌ Error during tokenization: " + message);
+    process.exit(1);
 }
